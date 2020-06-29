@@ -10,7 +10,7 @@ export default class TodoItem extends React.Component {
     console.log(this.props);
     
     let todo = this.props.todo;
-    let classes = `todo ${todo.status} ${this.state.markForDelete ? "fall" : ""}`;
+    let classes = `todo ${todo.isCompleted ? 'completed' : 'uncompleted'} ${this.state.markForDelete ? "fall" : ""}`;
     
     return (
       <div onAnimationEnd={this.props.removeTodo}
