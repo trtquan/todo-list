@@ -45,8 +45,10 @@ class App extends React.Component {
   };
 
   removeToDo = () => {
-    const todoListAfterRemove = this.state.todoList.filter(el => !el.isRemoved)
-    this.setState({todoList: todoListAfterRemove})
+    this.setState(state => {
+      const todoList = state.todoList.filter(el => !el.isRemoved);
+      return {todoList}
+    });
   };
   componentDidUpdate() {
     this.saveLocalTodoList();

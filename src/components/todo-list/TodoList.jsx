@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import ToDoItem from "../todo-item/TodoItem"
 export default class ToDoList extends Component {
-  constructor(props) {
-    super(props);
-  }
+
+  
   render() {
     const {todoList, onToggleSTT, onRemoveTodo, onPrepareRemove } = this.props;
     return (
@@ -14,9 +13,9 @@ export default class ToDoList extends Component {
               key={index}
               index={index}
               todo={el}
-              toggleSTT={() => onToggleSTT(index)}
+              onToggleSTT={() => onToggleSTT(index)}
               onPrepareRemove= {() => onPrepareRemove(index)}
-              removeTodo={() => onRemoveTodo(index)}
+              onRemoveTodo={() => onRemoveTodo(index)}
             />
           ))}
         </ul>
