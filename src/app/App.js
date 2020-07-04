@@ -1,6 +1,6 @@
 import React from "react";
-import TodoForm from "../todo-form/TodoForm";
-import TodoList from "../todo-list/TodoList";
+import TodoForm from "../components/todo-form/TodoForm";
+import TodoList from "../components/todo-list/TodoList";
 class App extends React.Component {
   constructor(props) {
     super(props);
