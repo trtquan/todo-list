@@ -3,28 +3,34 @@ import React from "react";
 export default class TodoItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { markForDelete: false };
   }
 
+  prepareRemove = (e) => {
+    e.stopPropagation();
+    this.props.onPrepareRemove();
+  };
+
+  onRemove = (e) => {
+    e.stopPropagation();
+    this.props.removeTodo();
+  };
+
   render() {
-    console.log(this.props);
-    
-    let todo = this.props.todo;
-    let classes = `todo ${todo.isCompleted ? 'completed' : 'uncompleted'} ${this.state.markForDelete ? "fall" : ""}`;
-    
+
+    const {todo, toggleSTT} = this.props;
     return (
-      <div onAnimationEnd={this.props.removeTodo}
-           className={classes} >
+      <div onAnimationEnd={(e) => this.onRemove(e)} className={`todo ${todo.isCompleted ? "completed" : "uncompleted"} ${
+      todo.isRemoved ? "fall" : ""
+    }`}>
         <li className="todo-item">{todo.task}</li>
 
-        <button className="check-btn" onClick={this.props.toggleSTT}>
+        <button className="check-btn" onClick={toggleSTT}>
           <i className="fas fa-check"></i>
         </button>
-        <button className="trash-btn" onClick={() => this.setState({markForDelete: true})}>
+        <button className="trash-btn" onClick={(e) => this.prepareRemove(e)}>
           <i className="fas fa-trash"></i>
         </button>
       </div>
     );
   }
 }
-

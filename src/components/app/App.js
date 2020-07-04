@@ -4,13 +4,12 @@ import TodoList from "../todo-list/TodoList";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { todoList: [], filterCriteria: "all" };
+    this.state = { todoList: this.getTodoList(), filterCriteria: "all" };
   }
-  componentDidMount() {
-    this.setState({todoList: this.getTodoList()});
-  }
+ 
   getTodoList = () => {
-    return JSON.parse(localStorage.getItem("todo-list")) || [];
+    const todoListLocal = localStorage.getItem("todo-list");
+    return todoListLocal ? JSON.parse(todoListLocal) : [];
   };
 
   filterTodo = (filterCriteria) => {
@@ -21,15 +20,11 @@ class App extends React.Component {
     if (!value) return;
 
     this.setState({
-      todoList: [...this.state.todoList, { task: value, isCompleted: false }],
+      todoList: [...this.state.todoList, { task: value, isCompleted: false, isRemoved: false }],
     });
-
-    this.saveLocalTodoList();
   };
 
   saveLocalTodoList = () => {
-    console.log('removed-todoListAfterRemove',this.state.todoList);
-    
     localStorage.setItem("todo-list", JSON.stringify(this.state.todoList));
   };
 
@@ -41,37 +36,36 @@ class App extends React.Component {
     });
   };
 
-  removeToDo = (i) => {
-    console.log(i, this.state.todoList);
-    const todoListAfterRemove = this.state.todoList.filter((el, index) =>{
-        console.log('todoListAfterRemove',{index, i});
-        
-       return index !== i
-      })
-    console.log('todoListAfterRemove', todoListAfterRemove);
-    this.setState({todoList: []})
-    console.log('current-todoListAfterRemove',this.state.todoList);
-    this.saveLocalTodoList();
+  prepareRemove = (i) => {
+    this.setState((state) => {
+      return state.todoList.map((el, index) =>
+        i === index ? (el.isRemoved = true) : el
+      );
+    });
   };
+
+  removeToDo = () => {
+    const todoListAfterRemove = this.state.todoList.filter(el => !el.isRemoved)
+    this.setState({todoList: todoListAfterRemove})
+  };
+  componentDidUpdate() {
+    this.saveLocalTodoList();
+  }
 
   render() {
     window.renderTime = window.renderTime + 1;
-    const criteria = this.state.filterCriteria;
     console.log('render',window.renderTime)
-
-    const todoList =
-      criteria === "all"
-        ? this.state.todoList
-        : this.state.todoList.filter((x) =>
-            criteria === "completed" ? x.isCompleted : !x.isCompleted
-          );
+    const {filterCriteria, todoList} = this.state;
+      const todoListFiltered = filterCriteria === "all" ? todoList
+                             : todoList.filter((x) => filterCriteria === "completed" ? x.isCompleted : !x.isCompleted);
     return (
       <>
         <TodoForm onAdd={this.addTodo} onFilter={this.filterTodo} />
         <TodoList
-          todoList={todoList}
+          todoList={todoListFiltered}
           onToggleSTT={this.toggleSTT}
           onRemoveTodo={this.removeToDo}
+          onPrepareRemove={this.prepareRemove}
         />
       </>
     );
